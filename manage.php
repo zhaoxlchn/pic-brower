@@ -1,9 +1,4 @@
 <?php
-$pw=!empty($_GET['pw'])?$_GET['pw']:false;
-if($pw==='zhao2534'){
-    setcookie("userLogin","1",time()+2592000);
-    exit('登陆成功！');
-}
 header("Content-type:application/json");
 $get=!empty($_POST['dir'])?$_POST['dir']:"./";
 
@@ -34,8 +29,5 @@ foreach ($files as $file){
         preg_match_all($pattern,$file,$matches,PREG_PATTERN_ORDER);
         if(empty($matches[0]))$dir_html.="<li onclick='js.post(\"{$get}{$file}/\")'>{$file}</li>";
     }
-}
-if(empty($_COOKIE['userLogin'])){
-    $pic_html=$dir_html='';
 }
 echo json_encode(['pic_html'=>$pic_html,'dir_html'=>$dir_html,'now_dir'=>$get]);
