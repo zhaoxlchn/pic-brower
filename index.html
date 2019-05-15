@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>图片浏览</title>
+    <link href="https://cdn.staticfile.org/fancybox/3.5.4/jquery.fancybox.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/fancybox/3.5.4/jquery.fancybox.min.js"></script>
+    <style>
+        #pic-box,#dir-box {padding: 0;}
+        #pic-box li,#dir-box li{text-decoration: none;display: inline-block;margin: 5px 5px}
+        #pic-box img{width: 200px;}
+        #dir-box li{
+            background-color: #1da1f2;
+            color: #fff;
+            padding: 0.7rem;
+            text-align: center;
+            border-radius: 5px;
+            width: 200px;
+        }
+        p{font-size: 12px;}
+        @media (max-width: 414px) {
+            #pic-box img{width: 100%;}
+            #pic-box li{margin-bottom: 5px}
+            #dir-box li{
+                display: block;
+                background-color: #1da1f2;
+                color: #fff;
+                padding: 1rem;
+                text-align: center;
+                border-radius: 5px;
+                width: auto;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<ul id="dir-box"></ul>
+<ul id="pic-box"></ul>
+</body>
+</html>
+
+<script src="https://cdn.staticfile.org/jquery/2.1.4/jquery.min.js"></script>
+<script type="application/javascript">
+    var js={
+        root:'./',
+        dir_arr:[],
+        init:function () {
+            this.post(this.root)
+        },
+        post:function (di) {
+            this.dir_arr.unshift({"dir":di,"scroll":this.getNowHigh()});
+            var new_dir_arr=this.dir_arr;
+            $.post("./manage.php", {dir:di},
+                function(data){
+                    $("#pic-box").empty();
+                    $("#pic-box").append(data.pic_html);
+                    $("#dir-box").empty();
+                    $("#dir-box").append(data.dir_html);
+
+                    if(typeof(new_dir_arr[2])!=='undefined'&&data.now_dir===new_dir_arr[2].dir){
+                        $("html,body").animate({scrollTop:new_dir_arr[1].scroll},1000);
+                    }
+                });
+        },
+        getNowHigh:function () {
+            var scrollTop=0;
+            if(document.documentElement&&document.documentElement.scrollTop){
+                scrollTop=document.documentElement.scrollTop;
+            }else if(document.body){
+                scrollTop=document.body.scrollTop;
+            }
+            return scrollTop;
+        }
+    };
+    js.init();
+
+</script>
